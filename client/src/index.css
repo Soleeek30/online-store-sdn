@@ -1,0 +1,114 @@
+/* src/index.css — ФИНАЛЬНО, ВСЁ ИСПРАВЛЕНО ПО ТВОИМ ЗАМЕЧАНИЯМ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* УБИРАЕМ БЕЛЫЙ КВАДРАТ ПОЛНОСТЬЮ */
+body {
+  background: #0a0a1f !important;
+  color: #0a0a1f !important;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+
+/* НЕОНОВЫЙ СИНИЙ ЛОГОТИП — ВЕРНУЛ КРАСИВЫЙ СИНИЙ, КАК РАНЬШЕ */
+.navbar-brand {
+  font-size: 3rem !important;
+  font-weight: 900 !important;
+  background: linear-gradient(90deg, #646cff, #a29bfe, #74b9ff) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: 0 0 40px rgba(100, 100, 255, 0.7) !important;
+  letter-spacing: 3px;
+  transition: all 0.4s ease;
+}
+
+.navbar-brand:hover {
+  transform: scale(1.05) !important;
+  text-shadow: 0 0 60px rgba(100, 100, 255, 0.9) !important;
+}
+
+/* NAVBAR — СТЕКЛЯННЫЙ, С ОРАНЖЕВОЙ ПОЛОСОЙ */
+.navbar {
+  background: rgba(10, 10, 40, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border-bottom: 2px solid #ff6b35 !important;
+}
+
+/* МОДАЛКИ АВТОРИЗАЦИИ — ЧИТАЕМЫЙ ТЁМНЫЙ ТЕКСТ */
+.modal-content {
+  background: rgba(20, 25, 50, 0.98) !important;
+  border: 2px solid #ff6b35 !important;
+  border-radius: 20px !important;
+  color: #ff9a6a !important; /* яркий оранжевый текст */
+  box-shadow: 0 0 40px rgba(255, 107, 53, 0.4) !important;
+}
+
+.modal-title {
+  color: #74b9ff !important;
+  font-weight: 700;
+}
+
+/* ПОЛЯ ВВОДА — ТЁМНЫЕ, С ОРАНЖЕВОЙ РАМКОЙ, БЕЗ ДВИЖЕНИЯ */
+.form-control {
+  background: white !important;
+  border: 2px solid #ff6b35 !important;
+  color: #333 !important;           /* тёмный текст внутри полей */
+  border-radius: 10px;
+}
+
+.form-control::placeholder {
+  color: #999 !important;           /* серый placeholder */
+}
+
+/* НАДПИСИ "Впервые здесь?" и "Введите email..." — БЕЛЫЕ */
+.text-muted,
+.form-text,
+small {
+  color: white !important;
+  opacity: 1 !important;
+}
+
+/* Заголовок модалки тоже белый (на всякий случай) */
+.modal-title {
+  color: white !important;
+}
+
+.form-control:focus {
+  background: white !important;
+  border-color: #646cff !important;
+  box-shadow: 0 0 0 0.25rem rgba(100, 100, 255, 0.3) !important;
+  color: #000 !important;
+}
+
+/* КНОПКИ В МОДАЛКЕ */
+.btn-success,
+.btn-outline-primary {
+  border-color: #ff6b35 !important;
+  color: #ff6b35 !important;
+}
+
+.btn-success:hover,
+.btn-outline-primary:hover {
+  background: #ff6b35 !important;
+  color: black !important;
+}
+
+/* КАРТОЧКИ ТОВАРОВ И БРЕНДЫ */
+.card,
+.brand-card,
+.list-group-item {
+  background: rgba(25, 30, 60, 0.9) !important;
+  border: 2px solid #ff6b35 !important;
+  color: #ff9a6a !important;
+  transition: all 0.4s ease;
+}
+
+.card:hover,
+.brand-card:hover {
+  transform: translateY(-15px) scale(1.03) !important;
+  box-shadow: 0 25px 50px rgba(255, 107, 53, 0.5) !important;
+  border-color: #646cff !important;
+}
