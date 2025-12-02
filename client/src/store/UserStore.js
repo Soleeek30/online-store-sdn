@@ -6,22 +6,6 @@ export default class UserStore {
 		this._isAuth = false
 		this._user = {}
 		makeAutoObservable(this)
-		this.checkAuthFromToken()
-	}
-
-	async checkAuthFromToken() {
-		const token = localStorage.getItem('token')
-
-		if (token) {
-			try {
-				const { data } = await $authHost.get('api/user/auth')
-				localStorage.setItem('token', data.token)
-				this.setIsAuth(true)
-				this.setUser(data.user)
-			} catch (e) {
-				this.logout()
-			}
-		}
 	}
 
 	setIsAuth(bool) {
@@ -69,12 +53,22 @@ export default class UserStore {
 	}
 
 	async checkAuth() {
+		const token = localStorage.getItem('token')
+
+		if (!token) {
+			console.log('No token found')
+			return
+		}
+
 		try {
-			const { data } = await $authHost.get('api/user/auth')
+			console.log('Checking auth with token...')
+			const { data } = await $authHost.get('/user/auth')
 			localStorage.setItem('token', data.token)
 			this.setIsAuth(true)
 			this.setUser(data.user)
+			console.log('Auth check successful:', data.user.email)
 		} catch (e) {
+			console.log('Auth check failed:', e.response?.status)
 			this.logout()
 		}
 	}

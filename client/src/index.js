@@ -12,16 +12,17 @@ const userStore = new UserStore()
 const deviceStore = new DeviceStore()
 const basketStore = new BasketStore()
 
-userStore.checkAuth().finally(() => {
-	ReactDOM.createRoot(document.getElementById('root')).render(
-		<Context.Provider
-			value={{
-				user: userStore,
-				device: deviceStore,
-				basket: basketStore,
-			}}
-		>
-			<App />
-		</Context.Provider>
-	)
-})
+console.log('🎬 Starting app...')
+
+// Рендерим сразу, проверка авторизации будет в App.js
+ReactDOM.createRoot(document.getElementById('root')).render(
+	<Context.Provider
+		value={{
+			user: userStore,
+			device: deviceStore,
+			basket: basketStore,
+		}}
+	>
+		<App />
+	</Context.Provider>
+)

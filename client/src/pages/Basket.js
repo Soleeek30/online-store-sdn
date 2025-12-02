@@ -3,9 +3,12 @@ import React, { useContext, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../index'
 import { Container, Card, Row, Col, Button, Image } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
+import { SHOP_ROUTE } from '../const'
 
 const Basket = observer(() => {
 	const { basket, user } = useContext(Context)
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		if (user.isAuth) {
@@ -26,8 +29,43 @@ const Basket = observer(() => {
 			<Container className='mt-5 text-center'>
 				<h2 className='text-muted'>Корзина пуста</h2>
 				<p>Добавьте товары из каталога</p>
+				<Button
+					variant='outline-primary'
+					size='lg'
+					onClick={() => navigate(SHOP_ROUTE)}
+					className='mt-3'
+				>
+					Перейти к покупкам
+				</Button>
 			</Container>
 		)
+	}
+
+	const removeOne = async deviceId => {
+		try {
+			await basket.removeOneFromBasket(deviceId)
+		} catch (error) {
+			console.error('Error removing from basket:', error)
+			alert('Ошибка при удалении товара')
+		}
+	}
+
+	const addOne = async deviceId => {
+		try {
+			await basket.addToBasket(deviceId)
+		} catch (error) {
+			console.error('Error adding to basket:', error)
+			alert('Ошибка при добавлении товара')
+		}
+	}
+
+	const removeAll = async deviceId => {
+		try {
+			await basket.removeAllFromBasket(deviceId)
+		} catch (error) {
+			console.error('Error removing all from basket:', error)
+			alert('Ошибка при удалении товара')
+		}
 	}
 
 	return (
@@ -62,20 +100,46 @@ const Basket = observer(() => {
 								height={100}
 								rounded
 								style={{ objectFit: 'contain' }}
-								onError={e =>
-									(e.target.src = 'https://via.placeholder.com/100?text=No+Img')
-								}
+								onError={e => {
+									e.target.src =
+										'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="12"%3ENo Img%3C/text%3E%3C/svg%3E'
+								}}
 							/>
 						</Col>
 
-						{/* Название и количество */}
-						<Col md={5}>
+						{/* Название */}
+						<Col md={4}>
 							<h4 style={{ color: '#74b9ff', margin: 0 }}>{item.name}</h4>
-							<p className='text-light mt-2 mb-0'>× {item.quantity || 1} шт.</p>
+							<p className='text-light mt-2 mb-0'>
+								{item.price.toLocaleString()} ₽ за шт.
+							</p>
+						</Col>
+
+						{/* Кнопки количества */}
+						<Col md={2}>
+							<div className='d-flex align-items-center justify-content-center gap-2'>
+								<Button
+									size='sm'
+									variant='outline-danger'
+									onClick={() => removeOne(item.id)}
+								>
+									−
+								</Button>
+								<span className='fw-bold fs-5 text-warning'>
+									{item.quantity || 1}
+								</span>
+								<Button
+									size='sm'
+									variant='outline-success'
+									onClick={() => addOne(item.id)}
+								>
+									+
+								</Button>
+							</div>
 						</Col>
 
 						{/* Цена за позицию */}
-						<Col md={3} className='text-end'>
+						<Col md={2} className='text-end'>
 							<h4 className='text-warning'>
 								{(item.price * (item.quantity || 1)).toLocaleString()} ₽
 							</h4>
@@ -85,10 +149,10 @@ const Basket = observer(() => {
 						<Col md={2} className='text-end'>
 							<Button
 								variant='outline-danger'
-								size='lg'
-								onClick={() => basket.removeOneFromBasket(item.id)}
+								size='sm'
+								onClick={() => removeAll(item.id)}
 							>
-								Удалить
+								Удалить всё
 							</Button>
 						</Col>
 					</Row>
@@ -100,6 +164,7 @@ const Basket = observer(() => {
 				className='text-end mt-5 p-4 rounded-4'
 				style={{ background: 'rgba(255, 107, 53, 0.15)' }}
 			>
+				<h3 className='text-light mb-2'>Товаров: {basket.totalCount} шт.</h3>
 				<h2 style={{ color: '#ff6b35', fontWeight: 'bold' }}>
 					Итого: {basket.totalPrice.toLocaleString()} ₽
 				</h2>

@@ -1,15 +1,40 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { BrowserRouter } from 'react-router-dom'
+import { observer } from 'mobx-react-lite'
+import { Context } from './index'
 import NavBar from './components/NavBar'
 import AppRouter from './components/AppRouter'
+import { Spinner } from 'react-bootstrap'
 
-function App() {
+const App = observer(() => {
+	const { user } = useContext(Context)
+	const [loading, setLoading] = useState(true)
+
+	useEffect(() => {
+		console.log('🚀 App mounting, checking auth...')
+		user.checkAuth().finally(() => {
+			console.log('✅ Auth check complete, isAuth:', user.isAuth)
+			setLoading(false)
+		})
+	}, [user])
+
+	if (loading) {
+		return (
+			<div
+				className='d-flex justify-content-center align-items-center'
+				style={{ height: '100vh' }}
+			>
+				<Spinner animation='border' variant='primary' />
+			</div>
+		)
+	}
+
 	return (
 		<BrowserRouter>
 			<NavBar />
 			<AppRouter />
 		</BrowserRouter>
 	)
-}
+})
 
 export default App

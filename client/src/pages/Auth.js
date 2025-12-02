@@ -10,7 +10,7 @@ import { LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE } from '../const'
 import { $host } from '../http'
 
 const Auth = observer(() => {
-	const { user, basket } = useContext(Context) // ← ДОБАВЬ basket ЗДЕСЬ!
+	const { user, basket } = useContext(Context)
 	const location = useLocation()
 	const navigate = useNavigate()
 	const isLogin = location.pathname === LOGIN_ROUTE
@@ -20,25 +20,32 @@ const Auth = observer(() => {
 
 	const click = async () => {
 		try {
-			let data
+			let response
 			if (isLogin) {
-				data = await $host.post('/api/user/login', { email, password })
+				// ИСПРАВЛЕНО: убран /api из пути
+				response = await $host.post('/user/login', { email, password })
 			} else {
-				data = await $host.post('/api/user/registration', {
+				// ИСПРАВЛЕНО: убран /api из пути
+				response = await $host.post('/user/registration', {
 					email,
 					password,
 					role: 'USER',
 				})
 			}
 
+			// ИСПРАВЛЕНО: правильное извлечение данных из response
+			const data = response.data
+
 			localStorage.setItem('token', data.token)
 			user.setUser(data.user)
 			user.setIsAuth(true)
 
+			// Загружаем корзину после входа
 			await basket.fetchBasket()
 
 			navigate(SHOP_ROUTE)
 		} catch (e) {
+			console.error('Auth error:', e)
 			alert(e.response?.data?.message || 'Ошибка входа')
 		}
 	}

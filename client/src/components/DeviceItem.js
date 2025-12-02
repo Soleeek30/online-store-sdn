@@ -11,23 +11,37 @@ const DeviceItem = observer(({ device }) => {
 	const navigate = useNavigate()
 	const { basket, user } = useContext(Context)
 
-	// Находим товар в корзине
-	const basketItem = basket.basket.find(item => item.id === device.id)
-	const quantity = basketItem?.quantity || 0
+	// ИСПРАВЛЕНО: используем computed значение из basket
+	const getQuantity = () => {
+		const basketItem = basket.basket.find(item => item.id === device.id)
+		return basketItem?.quantity || 0
+	}
 
-	const addToCart = e => {
+	const addToCart = async e => {
 		e.stopPropagation()
 		if (!user.isAuth) {
 			alert('Войдите в аккаунт')
 			return
 		}
-		basket.addToBasket(device.id)
+		try {
+			await basket.addToBasket(device.id)
+		} catch (error) {
+			console.error('Error adding to basket:', error)
+			alert('Ошибка при добавлении в корзину')
+		}
 	}
 
-	const removeOne = e => {
+	const removeOne = async e => {
 		e.stopPropagation()
-		basket.removeOneFromBasket(device.id)
+		try {
+			await basket.removeOneFromBasket(device.id)
+		} catch (error) {
+			console.error('Error removing from basket:', error)
+		}
 	}
+
+	// Вычисляем quantity при каждом рендере
+	const quantity = getQuantity()
 
 	return (
 		<Card
@@ -47,9 +61,11 @@ const DeviceItem = observer(({ device }) => {
 					height={180}
 					src={process.env.REACT_APP_API_URL + device.img}
 					style={{ objectFit: 'contain', borderRadius: '12px' }}
-					onError={e =>
-						(e.target.src = 'https://via.placeholder.com/180?text=No+Image')
-					}
+					onError={e => {
+						// Используем серый квадрат вместо via.placeholder
+						e.target.src =
+							'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="180" height="180"%3E%3Crect fill="%23ddd" width="180" height="180"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="14"%3ENo Image%3C/text%3E%3C/svg%3E'
+					}}
 				/>
 			</div>
 
