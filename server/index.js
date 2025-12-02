@@ -5,6 +5,7 @@ const cors = require('cors')
 const router = require('./routes/index')
 const errorHandler = require('./middleware/ErrorHandlingMiddleware')
 const basketRouter = require('./routes/basketRouter')
+const path = require('path')
 
 // Импортируем модель Device
 const { Device } = require('./models/models')
@@ -14,6 +15,7 @@ const PORT = process.env.PORT || 5000
 const app = express()
 app.use(cors())
 app.use(express.json())
+app.use(express.static(path.resolve(__dirname, 'static')))
 
 // Роутеры
 app.use('/api', router)
