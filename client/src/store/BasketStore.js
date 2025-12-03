@@ -48,8 +48,6 @@ class BasketStore {
 			console.log('Adding to basket:', deviceId)
 			const { data } = await $authHost.post('/basket', { deviceId })
 			console.log('Response:', data)
-			console.log('Response type:', Array.isArray(data) ? 'Array' : typeof data)
-			console.log('Response length:', data?.length)
 			runInAction(() => {
 				this.setBasket(data)
 				console.log('Basket updated to:', this._basket)
