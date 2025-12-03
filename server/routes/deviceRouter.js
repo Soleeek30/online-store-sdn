@@ -3,21 +3,16 @@ const Router = require('express')
 const router = new Router()
 const deviceController = require('../controllers/deviceController')
 const authMiddleware = require('../middleware/authMiddleware')
+const checkRole = require('../middleware/checkRoleMiddleware') // ← ЭТА СТРОЧКА!
 
-// Логируем все запросы к /device
-router.use((req, res, next) => {
-	console.log(`🔧 deviceRouter: ${req.method} ${req.path}`)
-	next()
-})
+// Создание
+router.post('/', authMiddleware, checkRole('ADMIN'), deviceController.create)
 
-// Создание устройства (требует авторизации)
-router.post('/', authMiddleware, (req, res, next) => {
-	console.log('✅ Middleware passed, calling controller...')
-	deviceController.create(req, res, next)
-})
 
-// Все могут смотреть
+// Получение
 router.get('/', deviceController.getAll)
 router.get('/:id', deviceController.getOne)
+
+router.delete('/:id', authMiddleware, checkRole('ADMIN'), deviceController.delete)
 
 module.exports = router

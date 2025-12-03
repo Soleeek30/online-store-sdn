@@ -72,6 +72,20 @@ class DeviceController {
 		}
 	}
 
+	async delete(req, res, next) {
+		try {
+			const { id } = req.params
+			const device = await Device.findByPk(id)
+			if (!device) {
+				return next(ApiError.badRequest('Товар не найден'))
+			}
+			await device.destroy()
+			return res.json({ message: 'Товар удалён' })
+		} catch (e) {
+			next(ApiError.badRequest(e.message))
+		}
+	}
+
 	async getAll(req, res) {
 		try {
 			let { brandId, typeId, limit, page } = req.query

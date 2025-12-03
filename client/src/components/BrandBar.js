@@ -1,36 +1,69 @@
-// src/components/BrandBar.js
 import React, { useContext } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../index'
 import Card from 'react-bootstrap/Card'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 const BrandBar = observer(() => {
 	const { device } = useContext(Context)
 
+	// Сортируем бренды по ID (новые справа)
+	const sortedBrands = [...device.brands].sort((a, b) => a.id - b.id)
+
 	return (
-		<div className='d-flex flex-wrap gap-3'>
-			{device.brands.map(brand => (
+		<Row className='mb-4'>
+			{/* Кнопка "Все бренды" */}
+			<Col xs='auto' className='mb-2'>
 				<Card
-					key={brand.id}
-					className='p-3 text-center'
 					style={{
 						cursor: 'pointer',
-						width: '140px',
-						borderRadius: '12px',
-						background:
-							brand.id === device.selectedBrand?.id
-								? '#ff6b35'
-								: 'rgba(30, 30, 60, 0.8)',
-						color: brand.id === device.selectedBrand?.id ? 'black' : '#ff9a6a',
-						border: '2px solid #ff6b35',
-						transition: 'all 0.3s',
+						padding: '12px 24px',
+						borderRadius: '20px',
+						border: !device.selectedBrand?.id
+							? '2px solid #ff6b35'
+							: '2px solid rgba(255, 107, 53, 0.3)',
+						background: !device.selectedBrand?.id
+							? '#ff6b35'
+							: 'rgba(25, 25, 55, 0.95)',
+						color: !device.selectedBrand?.id ? 'white' : '#ff6b35',
+						transition: 'all 0.3s ease',
+						fontWeight: 'bold',
 					}}
-					onClick={() => device.setSelectedBrand(brand)}
+					onClick={() => device.setSelectedBrand({})}
 				>
-					{brand.name}
+					Все бренды
 				</Card>
+			</Col>
+
+			{/* Список брендов */}
+			{sortedBrands.map(brand => (
+				<Col xs='auto' key={brand.id} className='mb-2'>
+					<Card
+						style={{
+							cursor: 'pointer',
+							padding: '12px 24px',
+							borderRadius: '20px',
+							border:
+								brand.id === device.selectedBrand?.id
+									? '2px solid #ff6b35'
+									: '2px solid rgba(255, 107, 53, 0.3)',
+							background:
+								brand.id === device.selectedBrand?.id
+									? '#ff6b35'
+									: 'rgba(25, 25, 55, 0.95)',
+							color:
+								brand.id === device.selectedBrand?.id ? 'white' : '#ff6b35',
+							transition: 'all 0.3s ease',
+							fontWeight: 'bold',
+						}}
+						onClick={() => device.setSelectedBrand(brand)}
+					>
+						{brand.name}
+					</Card>
+				</Col>
 			))}
-		</div>
+		</Row>
 	)
 })
 

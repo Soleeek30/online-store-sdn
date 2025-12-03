@@ -53,22 +53,34 @@ const DeviceItem = observer(({ device }) => {
 				border: '2px solid #ff6b35',
 				transition: 'all 0.3s ease',
 				height: '100%',
+				display: 'flex',
+				flexDirection: 'column',
 			}}
 			onClick={() => navigate(DEVICE_ROUTE + '/' + device.id)}
 		>
-			<Image
-				width={180}
-				height={180}
-				src={process.env.REACT_APP_API_URL + device.img}
-				style={{ objectFit: 'contain', borderRadius: '16px', padding: '10px' }}
-				className='mb-3'
-				onError={e => {
-					e.target.src =
-						'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="180" height="180"%3E%3Crect fill="%23ddd" width="180" height="180"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="14"%3ENo Image%3C/text%3E%3C/svg%3E'
+			{/* Контейнер для центрирования изображения */}
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+					height: '200px',
+					padding: '10px',
 				}}
-			/>
+			>
+				<Image
+					width={180}
+					height={180}
+					src={process.env.REACT_APP_API_URL + device.img}
+					style={{ objectFit: 'contain', borderRadius: '16px' }}
+					onError={e => {
+						e.target.src =
+							'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="180" height="180"%3E%3Crect fill="%23ddd" width="180" height="180"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="14"%3ENo Image%3C/text%3E%3C/svg%3E'
+					}}
+				/>
+			</div>
 
-			<div className='px-3 pb-3'>
+			<div className='px-3 pb-3' style={{ marginTop: 'auto' }}>
 				<h6 style={{ color: '#74b9ff', marginBottom: '10px' }}>
 					{device.name}
 				</h6>
@@ -78,16 +90,19 @@ const DeviceItem = observer(({ device }) => {
 					{device.price.toLocaleString()} ₽
 				</div>
 
-				{/* КНОПКА С СЧЁТЧИКОМ */}
+				{/* ОРАНЖЕВАЯ КНОПКА */}
 				{quantity === 0 ? (
 					<Button
-						variant='warning'
 						className='w-100 fw-bold'
 						style={{
-							background: '#ffc107',
+							background: '#ff6b35',
 							border: 'none',
 							borderRadius: '12px',
+							color: 'white',
+							transition: 'all 0.3s ease',
 						}}
+						onMouseEnter={e => (e.target.style.background = '#ff8555')}
+						onMouseLeave={e => (e.target.style.background = '#ff6b35')}
 						onClick={addToCart}
 					>
 						В корзину

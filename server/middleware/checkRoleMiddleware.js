@@ -1,19 +1,18 @@
 // server/middleware/checkRoleMiddleware.js
 const ApiError = require('../error/ApiError')
 
-module.exports = function (requiredRole) {
+module.exports = function (role) {
 	return function (req, res, next) {
 		if (req.method === 'OPTIONS') {
 			next()
 		}
-
 		try {
-			if (!req.user || req.user.role !== requiredRole) {
-				return next(ApiError.forbidden('Доступ запрещён: недостаточно прав'))
+			if (req.user.role !== role) {
+				return next(ApiError.forbidden('Нет доступа'))
 			}
 			next()
 		} catch (e) {
-			next(ApiError.forbidden('Ошибка проверки роли'))
+			next(ApiError.forbidden('Нет доступа'))
 		}
 	}
 }

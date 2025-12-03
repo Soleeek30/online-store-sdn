@@ -39,3 +39,8 @@ export const createDevice = async device => {
 	const { data } = await $authHost.post('/device', device)
 	return data
 }
+
+export const deleteDevice = async id => {
+	const { data } = await $authHost.delete(`/device/${id}`)
+	return data
+}
