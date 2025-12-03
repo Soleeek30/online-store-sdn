@@ -1,4 +1,3 @@
-// src/components/modals/CreateDevice.js
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
@@ -34,18 +33,70 @@ const CreateDevice = ({ show, onHide }) => {
 	}
 
 	const selectFile = e => {
-		setFile(e.target.files[0])
+		const selectedFile = e.target.files[0]
+		console.log('📎 File selected:', selectedFile?.name)
+		setFile(selectedFile)
 	}
 
-	const addDevice = () => {
-		const formData = new FormData()
-		formData.append('name', name)
-		formData.append('price', `${price}`)
-		formData.append('img', file)
-		formData.append('brandId', selectedBrand.id)
-		formData.append('typeId', selectedType.id)
-		formData.append('info', JSON.stringify(info))
-		createDevice(formData).then(data => onHide())
+	const addDevice = async () => {
+		try {
+			// Валидация
+			if (!name) {
+				alert('Введите название устройства')
+				return
+			}
+			if (!price || price <= 0) {
+				alert('Введите корректную цену')
+				return
+			}
+			if (!selectedType) {
+				alert('Выберите тип устройства')
+				return
+			}
+			if (!selectedBrand) {
+				alert('Выберите бренд устройства')
+				return
+			}
+			if (!file) {
+				alert('Выберите изображение устройства')
+				return
+			}
+
+			console.log('📦 Creating device with data:', {
+				name,
+				price,
+				typeId: selectedType.id,
+				brandId: selectedBrand.id,
+				file: file.name,
+				infoCount: info.length,
+			})
+
+			const formData = new FormData()
+			formData.append('name', name)
+			formData.append('price', `${price}`)
+			formData.append('img', file)
+			formData.append('brandId', selectedBrand.id) // ❌ ОШИБКА — должно быть selectedBrand.id
+			formData.append('typeId', selectedType.id) // ❌ ОШИБКА — должно быть selectedType.id
+
+			console.log('📤 Sending FormData...')
+			await createDevice(formData)
+
+			console.log('✅ Device created successfully')
+			alert('Устройство успешно создано!')
+
+			// Очищаем форму
+			setName('')
+			setPrice(0)
+			setFile(null)
+			setInfo([])
+			setSelectedType(null)
+			setSelectedBrand(null)
+
+			onHide()
+		} catch (error) {
+			console.error('❌ Error creating device:', error)
+			alert(error.response?.data?.message || 'Ошибка при создании устройства')
+		}
 	}
 
 	return (
@@ -56,7 +107,7 @@ const CreateDevice = ({ show, onHide }) => {
 			<Modal.Body>
 				<Form>
 					<Dropdown className='mt-3'>
-						<Dropdown.Toggle>
+						<Dropdown.Toggle variant={selectedType ? 'success' : 'secondary'}>
 							{selectedType?.name || 'Выберите тип'}
 						</Dropdown.Toggle>
 						<Dropdown.Menu>
@@ -72,7 +123,7 @@ const CreateDevice = ({ show, onHide }) => {
 					</Dropdown>
 
 					<Dropdown className='mt-3'>
-						<Dropdown.Toggle>
+						<Dropdown.Toggle variant={selectedBrand ? 'success' : 'secondary'}>
 							{selectedBrand?.name || 'Выберите бренд'}
 						</Dropdown.Toggle>
 						<Dropdown.Menu>
@@ -100,7 +151,15 @@ const CreateDevice = ({ show, onHide }) => {
 						value={price}
 						onChange={e => setPrice(e.target.value)}
 					/>
-					<Form.Control className='mt-3' type='file' onChange={selectFile} />
+					<Form.Control
+						className='mt-3'
+						type='file'
+						onChange={selectFile}
+						accept='image/*'
+					/>
+					{file && (
+						<div className='mt-2 text-success'>✅ Файл выбран: {file.name}</div>
+					)}
 					<hr />
 					<Button variant='outline-dark' onClick={addInfo}>
 						Добавить новую характеристику
