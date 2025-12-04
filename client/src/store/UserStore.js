@@ -36,6 +36,8 @@ export default class UserStore {
 	async login(email, password) {
 		try {
 			const { data } = await $host.post('/user/login', { email, password })
+			console.log('🔐 Login response:', data) // ДОБАВЛЕНО: лог
+			console.log('👤 User data:', data.user) // ДОБАВЛЕНО: лог
 			localStorage.setItem('token', data.token)
 			this.setIsAuth(true)
 			this.setUser(data.user)

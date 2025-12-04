@@ -24,6 +24,14 @@ const NavBar = observer(() => {
 		location.pathname === LOGIN_ROUTE ||
 		location.pathname === REGISTRATION_ROUTE
 
+	// Проверяем, является ли пользователь администратором
+	const isAdmin = user.user?.role === 'ADMIN'
+
+	// ДОБАВЛЕНО: Логи для отладки
+	console.log('👤 Current user:', user.user)
+	console.log('🔑 User role:', user.user?.role)
+	console.log('👑 Is admin:', isAdmin)
+
 	const logOut = () => {
 		user.logout()
 		basket.setBasket([]) // очищаем корзину при выходе
@@ -71,8 +79,8 @@ const NavBar = observer(() => {
 							</Nav.Link>
 						)}
 
-						{/* АДМИН ПАНЕЛЬ */}
-						{user.isAuth && !isAuthPage && (
+						{/* АДМИН ПАНЕЛЬ - только для администраторов */}
+						{user.isAuth && isAdmin && !isAuthPage && (
 							<Nav.Link as={NavLink} to={ADMIN_ROUTE}>
 								<Button
 									variant='outline-primary'

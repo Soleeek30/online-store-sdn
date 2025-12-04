@@ -1,3 +1,4 @@
+// server/controllers/userController.js
 const ApiError = require('../error/ApiError')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -5,7 +6,7 @@ const { User, Basket } = require('../models/models')
 
 const generateJwt = (id, email, role) => {
 	console.log('🎫 Generating JWT with:', { id, email, role })
-	const token = jwt.sign({ id: id, email, role }, process.env.SECRET_KEY, {
+	const token = jwt.sign({ id, email, role }, process.env.SECRET_KEY, {
 		expiresIn: '24h',
 	})
 	console.log('🎫 Generated token:', token)
@@ -33,7 +34,15 @@ class UserController {
 
 		const token = generateJwt(user.id, user.email, user.role)
 
-		return res.json({ token })
+		// ИСПРАВЛЕНО: Возвращаем token И user
+		return res.json({
+			token,
+			user: {
+				id: user.id,
+				email: user.email,
+				role: user.role,
+			},
+		})
 	}
 
 	async login(req, res, next) {
@@ -52,15 +61,32 @@ class UserController {
 			return next(ApiError.internal('Указан неверный пароль'))
 		}
 
-		console.log('✅ Login successful for user:', user.id, user.email)
+		console.log('✅ Login successful for user:', user.id, user.email, user.role)
 		const token = generateJwt(user.id, user.email, user.role)
 
-		return res.json({ token })
+		// ИСПРАВЛЕНО: Возвращаем token И user
+		return res.json({
+			token,
+			user: {
+				id: user.id,
+				email: user.email,
+				role: user.role,
+			},
+		})
 	}
 
 	async check(req, res, next) {
 		const token = generateJwt(req.user.id, req.user.email, req.user.role)
-		return res.json({ token })
+
+		// ИСПРАВЛЕНО: Возвращаем token И user
+		return res.json({
+			token,
+			user: {
+				id: req.user.id,
+				email: req.user.email,
+				role: req.user.role,
+			},
+		})
 	}
 }
 
