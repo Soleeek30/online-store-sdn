@@ -4,6 +4,8 @@ import { observer } from 'mobx-react-lite'
 import { Context } from './index'
 import NavBar from './components/NavBar'
 import AppRouter from './components/AppRouter'
+import WelcomeModal from './components/WelcomeModal'
+import Footer from './components/Footer'
 import { Spinner } from 'react-bootstrap'
 
 const App = observer(() => {
@@ -31,8 +33,20 @@ const App = observer(() => {
 
 	return (
 		<BrowserRouter>
-			<NavBar />
-			<AppRouter />
+			<div
+				style={{
+					minHeight: '100vh',
+					display: 'flex',
+					flexDirection: 'column',
+				}}
+			>
+				<WelcomeModal />
+				<NavBar />
+				<div style={{ flex: 1 }}>
+					<AppRouter />
+				</div>
+				<Footer />
+			</div>
 		</BrowserRouter>
 	)
 })

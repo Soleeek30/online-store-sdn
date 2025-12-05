@@ -57,7 +57,9 @@ const Auth = observer(() => {
 		>
 			<Card style={{ width: 600 }} className='p-5 shadow'>
 				<h2 className='m-auto mb-4 text-center'>
-					{isLogin ? 'Вход в аккаунт' : 'Создание аккаунта'}
+					{isLogin
+						? 'Вход в личную учетную запись пользователя'
+						: 'Создание личной учётной записи пользователя'}
 				</h2>
 
 				<Form className='d-flex flex-column'>
